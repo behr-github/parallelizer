@@ -1,11 +1,12 @@
 #include <iostream>
+#include <sstream>
 using namespace std;
 
 void replaceAll(string &str, const string &from, const string &to);
 
 int main(int argc, char* argv[]){
-    if(argc != 4){
-        cout << "usage: " << argv[0] << " string from to\n";
+    if(argc != 3){
+        cout << "usage: " << argv[0] << " string from \n";
         cout << "  Most likely you either did not pass a command,\n"
                "  or did not enclose it in quotes so that it does\n"
                "  not get read as multiple arguments.\n";
@@ -16,7 +17,10 @@ int main(int argc, char* argv[]){
     
     orig_str = string(argv[1]);
     old_substr = string(argv[2]);
-    new_substr = string(argv[3]);
+    
+    ostringstream convert;
+    convert << 42;
+    new_substr = convert.str();
 
     cout << "Original string: " << orig_str << "\n";
     replaceAll(orig_str, old_substr, new_substr);
