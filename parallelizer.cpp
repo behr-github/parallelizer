@@ -1,46 +1,46 @@
 #include <iostream>
+#include <stdlib.h>
 #include <sstream>
+#include <mpi.h>
 using namespace std;
 
+void replaceInt(string &str, const string &from, int to);
 void replaceAll(string &str, const string &from, const string &to);
 
 int main(int argc, char* argv[]){
-    if(argc != 3){
-        cout << "usage: " << argv[0] << " string from \n";
+    if(argc != 2){
+        cout << "usage: " << argv[0] << " command \n";
         cout << "  Most likely you either did not pass a command,\n"
                "  or did not enclose it in quotes so that it does\n"
                "  not get read as multiple arguments.\n";
         return 1;
     }
 
-    string orig_str, old_substr, new_substr;
+    int ierr, num_procs, my_id, run_err;
+    string cmd_str = string(argv[1]);
     
-    orig_str = string(argv[1]);
-    old_substr = string(argv[2]);
+    ierr = MPI_Init(&argc, &argv);
+
+    ierr = MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
+    ierr = MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    replaceInt(cmd_str, "%RANK%", my_id);
+    replaceInt(cmd_str, "%NP%", num_procs);
     
-    ostringstream convert;
-    convert << 42;
-    new_substr = convert.str();
+    run_err = system(cmd_str.c_str());
 
-    cout << "Original string: " << orig_str << "\n";
-    replaceAll(orig_str, old_substr, new_substr);
-    cout << "New string: " << orig_str << "\n";
-
-//    int ierr, num_procs, my_id, run_err;
-
-//    ierr = MPI_Init(&argc, &argv);
-    
-//    ierr = MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
-//    ierr = MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
-
-//    run_err = system(argv[1]);
-//    printf("Process %d finished with exit code %d\n", my_id, run_err);
-
-    //printf("Would execute command %s on process %d of %d\n", argv[1], my_id, num_procs);
-
-//    ierr = MPI_Finalize();
+    ierr = MPI_Finalize();
 
     return 0;
+}
+
+void replaceInt(string &str, const string &from, int to){
+    ostringstream convert;
+    convert << to;
+    replaceAll(str, from, convert.str());
+    // These may not be necessary
+    convert.str(string());
+    convert.clear();
 }
 
 void replaceAll(string &str, const string &from, const string &to){
