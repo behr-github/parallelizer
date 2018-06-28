@@ -69,16 +69,16 @@ For example, if there were 20 CSV files in the current directory, then
 ./file_sorter.exe 0 4 *.csv
 ```
 
-would print a space-separated list of the first five CSV files. This is meant for easy use with `parallelizer.exe` so that given the
+would print a space-separated list of the first five CSV files, `./file_sorter.exe 1 4 *.csv` would print the next five, and so on. This is meant for easy use with `parallelizer.exe` so that given the
 `%RANK%` and `%NP%` values, it will figure out which files this task should operate on.
 
 ### Caveats
 
-    1. This has not been tested with filenames that include spaces.
+1. This has not been tested with filenames that include spaces.
 
-    2. This assumes that it is given the same list of files in the same order across all tasks. It does no sorting internally, so
-       if the list varies for each call to this function, it may repeat or skip some files.
+2. This assumes that it is given the same list of files in the same order across all tasks. It does no sorting internally, so
+if the list varies for each call to this function, it may repeat or skip some files.
 
-    3. This does no intelligent load sharing, it will just split up the lists of files as equally as practical. If every file in the
-       first group is done quickly and every file in the last group takes a long time, it cannot do anything to balance that.
+3. This does no intelligent load sharing, it will just split up the lists of files as equally as practical. If every file in the
+first group is done quickly and every file in the last group takes a long time, it cannot do anything to balance that.
 
